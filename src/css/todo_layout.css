@@ -1,0 +1,120 @@
+#root {
+    position:absolute;
+    width:98%;
+    left:1%;
+    height:100%;
+}
+
+#navbar {
+    position:absolute;
+    height: 50px;
+    top:0%;
+    left:0%;
+    width: 100%;
+    height: 5%;
+    margin:auto;
+    padding-left: 10px;
+}
+
+#title-div {
+    position: absolute;
+    top:7px;
+}
+
+#left-sidebar {
+    position:absolute;
+    height:94%;
+    width:13%;
+    top:5.5%;
+    left:0%;
+    padding-left: 10px;
+}
+
+#workspace {
+    position:absolute;
+    height:94%;
+    width:84.6%;
+    top:5.5%;
+    left:13%;
+    padding-left: 15px;
+    padding-right: 25px;
+    grid-column: 2 span 1;
+    grid-row: 2 span 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#left-sidebar-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top:15px;
+    height:8%;
+    top:0%;
+    width: 80%;
+    grid-template-columns: 60% 40%;
+    white-space: nowrap;
+}
+
+#todo-lists-list {
+    padding-top: 50px;
+    position: absolute;
+    text-align: center;
+    height:80%;
+    width:100%;
+    top: 11%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-list-button {
+    padding-top:20px;
+    height: 60px;
+    width: 80%;
+}
+
+.todo-button {
+    white-space: nowrap;
+}
+
+#left-sidebar-controls {
+    text-align: right;
+}
+
+#todo-list-header-card {
+    padding-top:25px;
+    height:30px;
+    width: 100%;
+}
+
+#todo-list-items-div {
+    height:96%;
+    top:7%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.list-item-card {
+    padding-top:20px;
+    height: 45px;
+    display: flex;
+    flex-direction: row;
+}
+
+.item-col {
+    width:25%;
+}
+
+.list-controls-col {
+    /*display: flex;
+    flex-direction: row; 
+    flex-wrap: nowrap;*/
+}
+
+.list-item-control {
+    width: 20%;
+}
