@@ -91,6 +91,7 @@ class ToDoItem extends Component {
     }
 
     handleStatusChange = (event) => {
+        console.log(event.target.value)
         this.setState({
             status: event.target.value
         });
@@ -179,7 +180,7 @@ class ToDoItem extends Component {
                     <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
                         <div className='item-col task-col'>{this.state.desc}</div>
                         <div className='item-col due-date-col'>{this.state.date}</div>
-                        <select className='item-col status-col' name='status' onChange={this.handleStatusChange} onBlur={this.handleFinishStatus}>
+                        <select value={this.state.status} className='item-col status-col' name='status' onChange={this.handleStatusChange} onBlur={this.handleFinishStatus}>
                             <option value="complete">complete</option>
                             <option value="incomplete">incomplete</option>
                         </select>
@@ -225,52 +226,225 @@ class ToDoItem extends Component {
             }
         }
         else if (this.props.index == this.props.listLength-1){
-            return (
-                <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
-                    <div className='item-col task-col' onClick={this.handleEditDesc}>{this.state.desc}</div>
-                    <div className='item-col due-date-col' onClick={this.handleEditDate}>{this.state.date}</div>
-                    <div className='item-col status-col' className={statusType} onClick={this.handleStatusChange}>{this.state.status}</div>
-                    <div className='item-col test-4-col'></div>
-                    <div className='item-col list-controls-col'>
-                        <KeyboardArrowUp 
-                            className='list-item-control todo-button'
-                            onClick={this.handleSwapUp.bind(this, this.state.id)} />
-                        <KeyboardArrowDown 
-                            className='list-item-control todo-button disabled'
-                            onClick={this.handleSwapDown.bind(this, this.state.id)} />
-                        <Close 
-                            className='list-item-control todo-button'
-                            onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
-                        <div className='list-item-control'></div>
-            <div className='list-item-control'></div>
+            if(this.state.editDesc){
+                return (
+                    <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
+                        <input 
+                            type='text' 
+                            value={this.state.desc} 
+                            className='item-col task-col' 
+                            onChange={this.handleDescChange}
+                            onBlur={this.handleFinishDesc}
+                            >
+                        </input>
+                        <div className='item-col due-date-col'>{this.state.date}</div>
+                        <div className='item-col status-col' className={statusType}>{this.state.status}</div>
+                        <div className='item-col test-4-col'></div>
+                        <div className='item-col list-controls-col'>
+                            <KeyboardArrowUp 
+                                className='list-item-control todo-button disabled'
+                                onClick={this.handleSwapUp.bind(this, this.state.id)} />
+                            <KeyboardArrowDown 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapDown.bind(this, this.state.id)} />
+                            <Close 
+                                className='list-item-control todo-button'
+                                onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
+                            <div className='list-item-control'></div>
+                <div className='list-item-control'></div>
+                        </div>
                     </div>
-                </div>
-            )
+                )
+            }
+            else if (this.state.editDate) {
+                return (
+                    <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
+                        <div className='item-col task-col'>{this.state.desc}</div>
+                        <input
+                            type='date'
+                            className='item-col due-date-col'
+                            onChange={this.handleDateChange}
+                            onBlur={this.handleFinishDate}
+                        >
+                        </input>
+                        <div className='item-col status-col' className={statusType}>{this.state.status}</div>
+                        <div className='item-col test-4-col'></div>
+                        <div className='item-col list-controls-col'>
+                            <KeyboardArrowUp 
+                                className='list-item-control todo-button disabled'
+                                onClick={this.handleSwapUp.bind(this, this.state.id)} />
+                            <KeyboardArrowDown 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapDown.bind(this, this.state.id)} />
+                            <Close 
+                                className='list-item-control todo-button'
+                                onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
+                            <div className='list-item-control'></div>
+                <div className='list-item-control'></div>
+                        </div>
+                    </div>
+                )
+            }
+            else if (this.state.editStatus) {
+                return (
+                    <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
+                        <div className='item-col task-col'>{this.state.desc}</div>
+                        <div className='item-col due-date-col'>{this.state.date}</div>
+                        <select value={this.state.status} className='item-col status-col' name='status' onChange={this.handleStatusChange} onBlur={this.handleFinishStatus}>
+                            <option value="complete">complete</option>
+                            <option value="incomplete">incomplete</option>
+                        </select>
+                        <div className='item-col test-4-col'></div>
+                        <div className='item-col list-controls-col'>
+                            <KeyboardArrowUp 
+                                className='list-item-control todo-button disabled'
+                                onClick={this.handleSwapUp.bind(this, this.state.id)} />
+                            <KeyboardArrowDown 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapDown.bind(this, this.state.id)} />
+                            <Close 
+                                className='list-item-control todo-button'
+                                onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
+                            <div className='list-item-control'></div>
+                <div className='list-item-control'></div>
+                        </div>
+                    </div>
+                )
+            }
+            else{
+                return (
+                    <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
+                        <div className='item-col task-col' onClick={this.handleEditDesc}>{this.state.desc}</div>
+                        <div className='item-col due-date-col' onClick={this.handleEditDate}>{this.state.date}</div>
+                        <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{this.state.status}</div>
+                        <div className='item-col test-4-col'></div>
+                        <div className='item-col list-controls-col'>
+                            <KeyboardArrowUp 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapUp.bind(this, this.state.id)} />
+                            <KeyboardArrowDown 
+                                className='list-item-control todo-button disabled'
+                                onClick={this.handleSwapDown.bind(this, this.state.id)} />
+                            <Close 
+                                className='list-item-control todo-button'
+                                onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
+                            <div className='list-item-control'></div>
+                <div className='list-item-control'></div>
+                        </div>
+                    </div>
+                )
+            }
         }
         else{
-            return (
-                <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
-                    <div className='item-col task-col' onClick={this.handleEditDesc}>{this.state.desc}</div>
-                    <div className='item-col due-date-col' onClick={this.handleEditDate}>{this.state.date}</div>
-                    <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{this.state.status}</div>
-                    <div className='item-col test-4-col'></div>
-                    <div className='item-col list-controls-col'>
-                        <KeyboardArrowUp 
-                            className='list-item-control todo-button'
-                            onClick={this.handleSwapUp.bind(this, this.state.id)} />
-                        <KeyboardArrowDown 
-                            className='list-item-control todo-button'
-                            onClick={this.handleSwapDown.bind(this, this.state.id)} />
-                        <Close 
-                            className='list-item-control todo-button'
-                            onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
-                        <div className='list-item-control'></div>
-            <div className='list-item-control'></div>
+            if(this.state.editDesc){
+                return (
+                    <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
+                        <input 
+                            type='text' 
+                            value={this.state.desc} 
+                            className='item-col task-col' 
+                            onChange={this.handleDescChange}
+                            onBlur={this.handleFinishDesc}
+                            >
+                        </input>
+                        <div className='item-col due-date-col'>{this.state.date}</div>
+                        <div className='item-col status-col' className={statusType}>{this.state.status}</div>
+                        <div className='item-col test-4-col'></div>
+                        <div className='item-col list-controls-col'>
+                            <KeyboardArrowUp 
+                                className='list-item-control todo-button disabled'
+                                onClick={this.handleSwapUp.bind(this, this.state.id)} />
+                            <KeyboardArrowDown 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapDown.bind(this, this.state.id)} />
+                            <Close 
+                                className='list-item-control todo-button'
+                                onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
+                            <div className='list-item-control'></div>
+                <div className='list-item-control'></div>
+                        </div>
                     </div>
-                </div>
-            )
+                )
+            }
+            else if (this.state.editDate) {
+                return (
+                    <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
+                        <div className='item-col task-col'>{this.state.desc}</div>
+                        <input
+                            type='date'
+                            className='item-col due-date-col'
+                            onChange={this.handleDateChange}
+                            onBlur={this.handleFinishDate}
+                        >
+                        </input>
+                        <div className='item-col status-col' className={statusType}>{this.state.status}</div>
+                        <div className='item-col test-4-col'></div>
+                        <div className='item-col list-controls-col'>
+                            <KeyboardArrowUp 
+                                className='list-item-control todo-button disabled'
+                                onClick={this.handleSwapUp.bind(this, this.state.id)} />
+                            <KeyboardArrowDown 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapDown.bind(this, this.state.id)} />
+                            <Close 
+                                className='list-item-control todo-button'
+                                onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
+                            <div className='list-item-control'></div>
+                <div className='list-item-control'></div>
+                        </div>
+                    </div>
+                )
+            }
+            else if (this.state.editStatus) {
+                return (
+                    <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
+                        <div className='item-col task-col'>{this.state.desc}</div>
+                        <div className='item-col due-date-col'>{this.state.date}</div>
+                        <select value={this.state.status} className='item-col status-col' name='status' onChange={this.handleStatusChange} onBlur={this.handleFinishStatus}>
+                            <option value="complete">complete</option>
+                            <option value="incomplete">incomplete</option>
+                        </select>
+                        <div className='item-col test-4-col'></div>
+                        <div className='item-col list-controls-col'>
+                            <KeyboardArrowUp 
+                                className='list-item-control todo-button disabled'
+                                onClick={this.handleSwapUp.bind(this, this.state.id)} />
+                            <KeyboardArrowDown 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapDown.bind(this, this.state.id)} />
+                            <Close 
+                                className='list-item-control todo-button'
+                                onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
+                            <div className='list-item-control'></div>
+                <div className='list-item-control'></div>
+                        </div>
+                    </div>
+                )
+            }
+            else{
+                return (
+                    <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
+                        <div className='item-col task-col' onClick={this.handleEditDesc}>{this.state.desc}</div>
+                        <div className='item-col due-date-col' onClick={this.handleEditDate}>{this.state.date}</div>
+                        <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{this.state.status}</div>
+                        <div className='item-col test-4-col'></div>
+                        <div className='item-col list-controls-col'>
+                            <KeyboardArrowUp 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapUp.bind(this, this.state.id)} />
+                            <KeyboardArrowDown 
+                                className='list-item-control todo-button'
+                                onClick={this.handleSwapDown.bind(this, this.state.id)} />
+                            <Close 
+                                className='list-item-control todo-button'
+                                onClick={this.handleDeleteListItem.bind(this, this.state.id)} />
+                            <div className='list-item-control'></div>
+                <div className='list-item-control'></div>
+                        </div>
+                    </div>
+                )
+            }
         }
-        console.log(listItem);
     }
 }
 

@@ -9,6 +9,10 @@ import LeftSidebar from './components/LeftSidebar'
 import Workspace from './components/Workspace'
 import Modal from './components/Modal'         
 import { TimerSharp } from '@material-ui/icons';
+import AddNewItem_Transaction from './transactions/AddNewItem_Transaction';
+import DeleteItem_Transaction from './transactions/DeleteItem_Transaction';
+import MoveUp_Transaction from './transactions/MoveUp_Transaction'
+import MoveDown_Transaction from './transactions/MoveDown_Transaction'
 {/*import ItemsListHeaderComponent from './components/ItemsListHeaderComponent'
 import ItemsListComponent from './components/ItemsListComponent'
 import ListsComponent from './components/ListsComponent'
@@ -23,6 +27,8 @@ class App extends Component {
 
     // MAKE OUR TRANSACTION PROCESSING SYSTEM
     this.tps = new jsTPS();
+
+    localStorage.clear();
 
     // CHECK TO SEE IF THERE IS DATA IN LOCAL STORAGE FOR THIS APP
     let recentLists = localStorage.getItem("recentLists");
@@ -101,6 +107,23 @@ class App extends Component {
     let newToDoListsList = [...newToDoListInList, ...this.state.toDoLists];
     let newToDoList = newToDoListInList[0];
 
+    let addButton = document.getElementById("add-list-button");
+    addButton.classList.remove("add-list-but");
+    addButton.classList.add("disabled");
+
+    let addItem = document.getElementById("add-item-button");
+    if(addItem.classList.contains("disabled")){
+      addItem.classList.remove("disabled");      
+    }
+    let deleteList = document.getElementById("delete-list-button");
+    if(deleteList.classList.contains("disabled")){
+      deleteList.classList.remove("disabled");
+    }
+    let closeList = document.getElementById("close-list-button");
+    if(closeList.classList.contains("disabled")){
+      closeList.classList.remove("disabled");
+    }
+
     // AND SET THE STATE, WHICH SHOULD FORCE A render
     this.setState({
       toDoLists: newToDoListsList,
@@ -118,19 +141,37 @@ class App extends Component {
     return newToDoList;
   }
 
+  addNewItemTransaction = () => {
+    let trans = new AddNewItem_Transaction(this);
+    this.tps.addTransaction(trans);
+  }
+
   addNewItem = () => {
     let newItem = this.makeNewToDoListItem();
-    let toDoList = this.state.currentList;
-    toDoList.items.push(newItem);
-
+    // let toDoList = this.state.currentList
+    let toDoList = [... this.state.currentList.items, newItem];
+    let newList = {
+      id: this.state.currentList.id,
+      name: this.state.currentList.name,
+      items: toDoList
+    }
+    const nextLists = this.state.toDoLists.map(testList =>
+      (testList.id === this.state.currentList.id) ? newList : testList
+    );
+    console.log(nextLists);
     // AND SET THE STATE, WHICH SHOULD FORCE A render
     this.setState({
-      currentList: toDoList
-    }, this.afterToDoListsChangeComplete);
+      toDoLists: nextLists,
+      currentList: newList,
+      nextListItemId: this.state.nextListItemId+1
+    }, console.log(this.state.toDoLists));
+    // this.afterToDoListsChangeComplete);
+
   }
 
   makeNewToDoListItem = () =>  {
     let newToDoListItem = {
+      id: this.state.nextListItemId,
       description: "No Description",
       due_date: "none",
       status: "incomplete"
@@ -138,6 +179,12 @@ class App extends Component {
     return newToDoListItem;
   }
   
+  deleteItemTransaction = (id) => {
+    let trans = new DeleteItem_Transaction(this, id);
+    this.tps.addTransaction(trans);
+  }
+
+
   deleteItem = (id) => {      // should delete the list, given the item id
     let toDoList = this.state.currentList;    // obtains the current list
     let indexOfItem = -1;
@@ -147,11 +194,31 @@ class App extends Component {
         indexOfItem = i;
       }
     }
-    toDoList.items.splice(indexOfItem, 1);
+    let itemsList1 = toDoList.items.slice(0, indexOfItem);
+    let itemsList2 = toDoList.items.slice(indexOfItem+1);
+    let itemsList = itemsList1.concat(itemsList2);
+
+    let newList = {
+      id: this.state.currentList.id,
+      name: this.state.currentList.name,
+      items: itemsList
+    }
+
+    
+    const nextLists = this.state.toDoLists.map(testList =>
+      (testList.id === this.state.currentList.id) ? newList : testList
+    );
+
 
     this.setState({
-      currentList: toDoList
+      toDoLists: nextLists,
+      currentList: newList
     }, this.afterToDoListsChangeComplete);
+  }
+
+  moveUpTransaction = (id) => {
+    let trans = new MoveUp_Transaction(this, id);
+    this.tps.addTransaction(trans);
   }
 
   swapItemUp = (id) => {
@@ -164,12 +231,31 @@ class App extends Component {
     }
     let swapee = toDoList.items[indexOfItem];
     let victim = toDoList.items[indexOfItem-1];
-    toDoList.items[indexOfItem] = victim;
-    toDoList.items[indexOfItem-1] = swapee;
+    let itemsList1 = toDoList.items.slice(0,indexOfItem-1);
+    itemsList1.push(swapee);
+    itemsList1.push(victim);
+    let itemsList2 = toDoList.items.slice(indexOfItem+1);
+    let itemsList = itemsList1.concat(itemsList2);
+
+    let newList = {
+      id: this.state.currentList.id,
+      name: this.state.currentList.name,
+      items: itemsList
+    }
+
+    const nextLists = this.state.toDoLists.map(testList =>
+      (testList.id === this.state.currentList.id) ? newList : testList
+    );
 
     this.setState({
-      currentList: toDoList
+      toDoLists: nextLists,
+      currentList: newList
     }, this.afterToDoListsChangeComplete);
+  }
+
+  moveDownTransaction = (id) => {
+    let trans = new MoveDown_Transaction(this, id);
+    this.tps.addTransaction(trans);
   }
 
   swapItemDown = (id) => {
@@ -182,11 +268,28 @@ class App extends Component {
     }
     let swapee = toDoList.items[indexOfItem];
     let victim = toDoList.items[indexOfItem+1];
-    toDoList.items[indexOfItem] = victim;
-    toDoList.items[indexOfItem+1] = swapee;
+
+    let itemsList1 = toDoList.items.slice(0,indexOfItem);
+    itemsList1.push(victim);
+    itemsList1.push(swapee);
+
+    let itemsList2 = toDoList.items.slice(indexOfItem+2);
+    let itemsList = itemsList1.concat(itemsList2);
+    console.log(itemsList);
+
+    let newList = {
+      id: this.state.currentList.id,
+      name: this.state.currentList.name,
+      items: itemsList
+    }
+
+    const nextLists = this.state.toDoLists.map(testList =>
+      (testList.id === this.state.currentList.id) ? newList : testList
+    );
 
     this.setState({
-      currentList: toDoList
+      toDoLists: nextLists,
+      currentList: newList
     }, this.afterToDoListsChangeComplete);
   }
 
@@ -306,17 +409,41 @@ class App extends Component {
   // STATUS DONE //
 // LIST EDITING METHODS DONE //
 
+// UNDO / REDO WORK //
+
+  undo = () => {
+    console.log("boop");
+    if (this.tps.hasTransactionToUndo()) {
+      this.tps.undoTransaction();
+      console.log("hi")
+    }
+  } 
+
+  redo = () => {
+    if (this.tps.hasTransactionToRedo()) {
+        this.tps.doTransaction();
+        // if (!this.tps.hasTransactionToRedo()) {
+        //     this.view.disableButton("redo-button");
+        // }
+        // this.view.enableButton("undo-button");
+    }
+}
+
+// END OF UNDO / REDO //
+
   // THIS IS A CALLBACK FUNCTION FOR AFTER AN EDIT TO A LIST
   afterToDoListsChangeComplete = () => {
     console.log("App updated currentToDoList: " + this.state.currentList);
 
     // WILL THIS WORK? @todo
     let toDoListsString = JSON.stringify(this.state.toDoLists);
-    localStorage.setItem("recent_work", toDoListsString);
+    localStorage.setItem("recentLists", toDoListsString);
+
+    console.log(this.state.toDoLists)
   }
 
   render() {
-    console.log("ray i love u im sorry");
+    console.log(this.state.toDoLists);
     console.log(this.state.currentList);
     let items = this.state.currentList.items;
     return (
@@ -329,16 +456,18 @@ class App extends Component {
           addNewListCallback={this.addNewList}
         />
         <Workspace 
+          undo={this.undo}
+          redo={this.redo}
           descUpdateCallback={this.handleDescUpdate}
           dateUpdateCallback={this.handleDateUpdate}
           statusUpdateCallback={this.handleStatusUpdate}
           currentList={this.state.currentList}
           toDoLists={this.state.toDoLists}
           toDoListItems={items} 
-          addNewListItemCallback={this.addNewItem}
-          deleteListItemCallback={this.deleteItem}
-          swapUpCallback={this.swapItemUp}
-          swapDownCallback={this.swapItemDown}
+          addNewListItemCallback={this.addNewItemTransaction}
+          deleteListItemCallback={this.deleteItemTransaction}
+          swapUpCallback={this.moveUpTransaction}
+          swapDownCallback={this.moveDownTransaction}
           modalShowCallback={this.showModal}
           closeListCallback={this.closeList}
         />
