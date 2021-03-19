@@ -118,3 +118,22 @@
 .list-item-control {
     width: 20%;
 }
+
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 35%;
+    top: 25%;
+    width: 30%;
+    animation: appear_in .3s ease;
+}
+@keyframes appear_in {
+    0% {
+        opacity: 0;
+        transform: translateY(-20rem);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -7,6 +7,7 @@ import jsTPS from './common/jsTPS' // WE NEED THIS TOO
 import Navbar from './components/Navbar'
 import LeftSidebar from './components/LeftSidebar'
 import Workspace from './components/Workspace'
+import Modal from './components/Modal'         
 import { TimerSharp } from '@material-ui/icons';
 {/*import ItemsListHeaderComponent from './components/ItemsListHeaderComponent'
 import ItemsListComponent from './components/ItemsListComponent'
@@ -49,12 +50,15 @@ class App extends Component {
 
     // SETUP OUR APP STATE
     this.state = {
+      showModal: false,
       toDoLists: recentLists,
       currentList: {items: []},
       nextListId: highListId+1,
       nextListItemId: highListItemId+1,
       useVerboseFeedback: true
     }
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
   }
 
   // WILL LOAD THE SELECTED LIST
@@ -83,31 +87,6 @@ class App extends Component {
     if(closeList.classList.contains("disabled")){
       closeList.classList.remove("disabled");
     }
-
-/**
- *   {names.filter(name => name.includes('J')).map(filteredName => (
-    <li>
-      {filteredName}
-    </li>
-  ))}
- */
-
-    let testListArray = document.getElementsByClassName('todo-list-button');
-  
-    // for(let i = 0; i < testListArray.length; i++){
-    //   if(testListArray[i] === toDoList){
-    //     console.log("hi");
-    //   }
-    // }
-
-    // let listElement = testListArray.filter(list => list.items.eq)
- 
-    // if(toDoList.items[0])
-    // console.log(toDoList.items[0]);
-
-    // toDoList.classList.add("highlight");
-
-// must figure out how to make the current selected list highlighted
 
     this.setState({
       toDoLists: nextLists,
@@ -157,6 +136,19 @@ class App extends Component {
     return newToDoListItem;
   }
 
+  showModal = () => {
+    this.setState({
+        showModal: true 
+    });
+  };
+
+  hideModal = () => {
+    this.setState({ 
+        showModal: false 
+    });
+  };
+
+  
   deleteItem = (id) => {      // should delete the list, given the item id
     let toDoList = this.state.currentList;    // obtains the current list
     let indexOfItem = -1;
@@ -209,6 +201,28 @@ class App extends Component {
     }, this.afterToDoListsChangeComplete);
   }
 
+  deleteList = (toDoList) => {
+    const nextLists = this.state.toDoLists.filter(testList =>
+      testList.id !== toDoList.id
+    );
+
+    let addButton = document.getElementById("add-list-button");
+    addButton.classList.remove("disabled");
+    addButton.classList.add("add-list-but");
+
+    let addItem = document.getElementById("add-item-button");
+    addItem.classList.add("disabled");
+    let deleteList = document.getElementById("delete-list-button");
+    deleteList.classList.add("disabled");
+    let closeList = document.getElementById("close-list-button");
+    closeList.classList.add("disabled");
+
+    this.setState({
+      toDoLists: nextLists,
+      currentList: {items: []}
+    });
+  }
+
   closeList = () => {
     let addButton = document.getElementById("add-list-button");
     addButton.classList.remove("disabled");
@@ -247,12 +261,19 @@ class App extends Component {
           addNewListCallback={this.addNewList}
         />
         <Workspace 
+          currentList={this.state.currentList}
           toDoListItems={items} 
           addNewListItemCallback={this.addNewItem}
           deleteListItemCallback={this.deleteItem}
           swapUpCallback={this.swapItemUp}
           swapDownCallback={this.swapItemDown}
+          modalShowCallback={this.showModal}
+          // deleteListCallback={this.deleteList}
           closeListCallback={this.closeList}
+        />
+        <Modal
+          show={this.state.showModal}
+          handleClose={this.hideModal}
         />
       </div>
     );

@@ -32,7 +32,17 @@ class Workspace extends Component {
         this.props.closeListCallback();
     }
 
+    handleDeleteList = (toDoList) => {
+        this.props.deleteListCallback(toDoList);
+    }
+
+    handleShowModal = () => {
+        this.props.showModalCallback();
+    }
+
     render() {
+        let currentList = this.props.currentList;
+
         return (
             <div id="workspace">
                 <div id="todo-list-header-card" className="list-item-card">
@@ -48,7 +58,8 @@ class Workspace extends Component {
                             onClick={this.handleAddNewListItem}/>
                         <Delete
                             id="delete-list-button" 
-                            className="list-item-control material-icons todo-button disabled"/>
+                            className="list-item-control material-icons todo-button disabled"
+                            onClick={this.handleShowModal}/>
                         <Close 
                             id="close-list-button" 
                             className="list-item-control material-icons todo-button disabled"
