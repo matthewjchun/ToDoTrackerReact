@@ -93,7 +93,6 @@ class ToDoItem extends Component {
                     <div className='item-col test-4-col'></div>
                     <div className='item-col list-controls-col'>
                         <KeyboardArrowUp 
-                            // id={'swap-up-' + listItem.id}
                             className='list-item-control todo-button'
                             onClick={this.handleSwapUp.bind(this, listItem.id)} />
                         <KeyboardArrowDown 

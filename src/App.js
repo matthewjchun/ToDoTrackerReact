@@ -241,6 +241,7 @@ class App extends Component {
       <div id="root">
         <Navbar />
         <LeftSidebar 
+          currentList={this.state.currentList}
           toDoLists={this.state.toDoLists}
           loadToDoListCallback={this.loadToDoList}
           addNewListCallback={this.addNewList}
