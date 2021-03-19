@@ -22,7 +22,7 @@ class ListLink extends Component {
         // DISPLAY WHERE WE ARE
         console.log("\t\t\tListLink render");
 
-        if(this.props.activeList === true){
+        if(this.props.activeList == true){
             return (
                 <div 
                     className='todo-list-button highlight'

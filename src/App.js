@@ -88,6 +88,8 @@ class App extends Component {
       closeList.classList.remove("disabled");
     }
 
+    console.log(toDoList);
+
     this.setState({
       toDoLists: nextLists,
       currentList: toDoList
@@ -109,7 +111,7 @@ class App extends Component {
 
   makeNewToDoList = () => {
     let newToDoList = {
-      id: this.highListId,
+      id: this.state.nextListId,
       name: 'Untitled',
       items: []
     };
@@ -135,24 +137,11 @@ class App extends Component {
     };
     return newToDoListItem;
   }
-
-  showModal = () => {
-    this.setState({
-      modal: true 
-    });
-  };
-
-  hideModal = () => {
-    this.setState({ 
-      modal: false 
-    });
-  };
-
   
   deleteItem = (id) => {      // should delete the list, given the item id
     let toDoList = this.state.currentList;    // obtains the current list
     let indexOfItem = -1;
-    // console.log(id);
+    
     for (let i = 0; (i < toDoList.items.length) && (indexOfItem < 0); i++){
       if (toDoList.items[i].id === id){
         indexOfItem = i;
@@ -202,8 +191,6 @@ class App extends Component {
   }
 
   deleteList = (toDoList) => {
-    console.log(this.state.toDoLists);
-    
     const nextLists = this.state.toDoLists.filter(testList =>
       testList.id !== toDoList.id
     );
@@ -244,6 +231,81 @@ class App extends Component {
     }, this.afterToDoListsChangeComplete);
   }
 
+// MODAL WORK//
+
+  showModal = () => {
+    this.setState({
+      modal: true 
+    });
+  };
+
+  hideModal = () => {
+    this.setState({ 
+      modal: false 
+    });
+  };
+
+// END OF MODAL WORK //
+// LIST EDITING CALLBACK HANDLERS //
+  // DESCRIPTION DONE //
+  handleDescUpdate = (id, desc) => {
+    let toDoList = this.state.currentList;    // obtains the current list
+    let indexOfItem = -1;
+    
+    for (let i = 0; (i < toDoList.items.length) && (indexOfItem < 0); i++){
+      if (toDoList.items[i].id === id){
+        indexOfItem = i;
+      }
+    }
+
+    let editedItem = toDoList.items[indexOfItem];
+    editedItem.description = desc;
+
+    this.setState({
+      currentList: this.state.currentList
+    }, this.afterToDoListsChangeComplete)
+  }
+  // DESCRIPTION DONE //
+  // DATE START //
+  handleDateUpdate = (id, date) => {
+    let toDoList = this.state.currentList;    // obtains the current list
+    let indexOfItem = -1;
+    
+    for (let i = 0; (i < toDoList.items.length) && (indexOfItem < 0); i++){
+      if (toDoList.items[i].id === id){
+        indexOfItem = i;
+      }
+    }
+
+    let editedItem = toDoList.items[indexOfItem];
+    editedItem.due_date = date;
+
+    this.setState({
+      currentList: this.state.currentList
+    }, this.afterToDoListsChangeComplete)
+  }
+  // DATE DONE //
+  // STATUS START //
+  handleStatusUpdate = (id, status) => {
+    let toDoList = this.state.currentList;    // obtains the current list
+    let indexOfItem = -1;
+    
+    for (let i = 0; (i < toDoList.items.length) && (indexOfItem < 0); i++){
+      if (toDoList.items[i].id === id){
+        indexOfItem = i;
+      }
+    }
+
+    let editedItem = toDoList.items[indexOfItem];
+    editedItem.status = status;
+
+    this.setState({
+      currentList: this.state.currentList
+    }, this.afterToDoListsChangeComplete)
+  }
+  // STATUS DONE //
+// LIST EDITING METHODS DONE //
+
   // THIS IS A CALLBACK FUNCTION FOR AFTER AN EDIT TO A LIST
   afterToDoListsChangeComplete = () => {
     console.log("App updated currentToDoList: " + this.state.currentList);
@@ -254,6 +316,8 @@ class App extends Component {
   }
 
   render() {
+    console.log("ray i love u im sorry");
+    console.log(this.state.currentList);
     let items = this.state.currentList.items;
     return (
       <div id="root">
@@ -265,7 +329,11 @@ class App extends Component {
           addNewListCallback={this.addNewList}
         />
         <Workspace 
+          descUpdateCallback={this.handleDescUpdate}
+          dateUpdateCallback={this.handleDateUpdate}
+          statusUpdateCallback={this.handleStatusUpdate}
           currentList={this.state.currentList}
+          toDoLists={this.state.toDoLists}
           toDoListItems={items} 
           addNewListItemCallback={this.addNewItem}
           deleteListItemCallback={this.deleteItem}
@@ -275,6 +343,7 @@ class App extends Component {
           closeListCallback={this.closeList}
         />
         <Modal
+          currentList={this.state.currentList}
           show={this.state.modal}
           handleClose={this.hideModal}
           handleDeleteList={this.deleteList}

@@ -70,6 +70,11 @@ class Workspace extends Component {
                     {
                         this.props.toDoListItems.map((toDoListItem, itemIndex) => (
                         <ToDoItem
+                            descUpdateCallback={this.props.descUpdateCallback}
+                            dateUpdateCallback={this.props.dateUpdateCallback}
+                            statusUpdateCallback={this.props.statusUpdateCallback}
+                            currentList={this.props.currentList}
+                            toDoLists={this.props.toDoLists}
                             listLength={this.props.toDoListItems.length}
                             index={itemIndex}
                             key={toDoListItem.id}
