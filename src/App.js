@@ -50,7 +50,7 @@ class App extends Component {
 
     // SETUP OUR APP STATE
     this.state = {
-      showModal: false,
+      modal: false,
       toDoLists: recentLists,
       currentList: {items: []},
       nextListId: highListId+1,
@@ -138,13 +138,13 @@ class App extends Component {
 
   showModal = () => {
     this.setState({
-        showModal: true 
+      modal: true 
     });
   };
 
   hideModal = () => {
     this.setState({ 
-        showModal: false 
+      modal: false 
     });
   };
 
@@ -202,6 +202,8 @@ class App extends Component {
   }
 
   deleteList = (toDoList) => {
+    console.log(this.state.toDoLists);
+    
     const nextLists = this.state.toDoLists.filter(testList =>
       testList.id !== toDoList.id
     );
@@ -216,11 +218,13 @@ class App extends Component {
     deleteList.classList.add("disabled");
     let closeList = document.getElementById("close-list-button");
     closeList.classList.add("disabled");
-
+    
     this.setState({
       toDoLists: nextLists,
-      currentList: {items: []}
+      currentList: {items: []},
     });
+
+    this.hideModal();
   }
 
   closeList = () => {
@@ -268,12 +272,12 @@ class App extends Component {
           swapUpCallback={this.swapItemUp}
           swapDownCallback={this.swapItemDown}
           modalShowCallback={this.showModal}
-          // deleteListCallback={this.deleteList}
           closeListCallback={this.closeList}
         />
         <Modal
-          show={this.state.showModal}
+          show={this.state.modal}
           handleClose={this.hideModal}
+          handleDeleteList={this.deleteList}
         />
       </div>
     );

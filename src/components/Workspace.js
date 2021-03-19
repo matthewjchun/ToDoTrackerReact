@@ -37,7 +37,7 @@ class Workspace extends Component {
     }
 
     handleShowModal = () => {
-        this.props.showModalCallback();
+        this.props.modalShowCallback();
     }
 
     render() {
