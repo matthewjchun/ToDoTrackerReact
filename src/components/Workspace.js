@@ -44,19 +44,23 @@ class Workspace extends Component {
                         <Redo id="redo-button" className="list-item-control material-icons todo-button" />
                         <AddBox 
                             id="add-item-button" 
-                            className="list-item-control material-icons todo-button" 
+                            className="list-item-control material-icons todo-button disabled" 
                             onClick={this.handleAddNewListItem}/>
-                        <Delete id="delete-list-button" className="list-item-control material-icons todo-button" />
+                        <Delete
+                            id="delete-list-button" 
+                            className="list-item-control material-icons todo-button disabled"/>
                         <Close 
                             id="close-list-button" 
-                            className="list-item-control material-icons todo-button"
+                            className="list-item-control material-icons todo-button disabled"
                             onClick={this.handleCloseList} />
                     </div>
                 </div>
                 <div id="todo-list-items-div">
                     {
-                        this.props.toDoListItems.map((toDoListItem) => (
+                        this.props.toDoListItems.map((toDoListItem, itemIndex) => (
                         <ToDoItem
+                            listLength={this.props.toDoListItems.length}
+                            index={itemIndex}
                             key={toDoListItem.id}
                             toDoListItem={toDoListItem}     // PASS THE ITEM TO THE CHILDREN
                             deleteListItemCallback={this.handleDeleteListItemCallback}

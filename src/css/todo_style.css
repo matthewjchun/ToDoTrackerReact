@@ -124,3 +124,7 @@
     pointer-events: none;
     color: var(--swatch-contrast);
 }
+
+.highlight {
+    background-color: var(--swatch-accent);
+}

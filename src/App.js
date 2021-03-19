@@ -84,6 +84,30 @@ class App extends Component {
       closeList.classList.remove("disabled");
     }
 
+/**
+ *   {names.filter(name => name.includes('J')).map(filteredName => (
+    <li>
+      {filteredName}
+    </li>
+  ))}
+ */
+
+    let testListArray = document.getElementsByClassName('todo-list-button');
+  
+    // for(let i = 0; i < testListArray.length; i++){
+    //   if(testListArray[i] === toDoList){
+    //     console.log("hi");
+    //   }
+    // }
+
+    // let listElement = testListArray.filter(list => list.items.eq)
+ 
+    // if(toDoList.items[0])
+    // console.log(toDoList.items[0]);
+
+    // toDoList.classList.add("highlight");
+
+// must figure out how to make the current selected list highlighted
 
     this.setState({
       toDoLists: nextLists,
@@ -136,7 +160,7 @@ class App extends Component {
   deleteItem = (id) => {      // should delete the list, given the item id
     let toDoList = this.state.currentList;    // obtains the current list
     let indexOfItem = -1;
-    console.log(id);
+    // console.log(id);
     for (let i = 0; (i < toDoList.items.length) && (indexOfItem < 0); i++){
       if (toDoList.items[i].id === id){
         indexOfItem = i;
