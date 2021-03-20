@@ -1,6 +1,5 @@
 const Modal = ({ handleClose, show, handleDeleteList, currentList }) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
-    console.log(currentList);
     
     return (
         <div className={showHideClassName}>

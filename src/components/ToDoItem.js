@@ -52,8 +52,7 @@ class ToDoItem extends Component {
     }
 
     handleFinishDesc = () => {
-
-        this.props.descUpdateCallback(this.state.id, this.state.desc);
+        this.props.descUpdateCallback(this.state.id, this.state.desc, );
 
         this.setState({
             editDesc: false

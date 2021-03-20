@@ -13,6 +13,7 @@ import AddNewItem_Transaction from './transactions/AddNewItem_Transaction';
 import DeleteItem_Transaction from './transactions/DeleteItem_Transaction';
 import MoveUp_Transaction from './transactions/MoveUp_Transaction'
 import MoveDown_Transaction from './transactions/MoveDown_Transaction'
+import EditDesc_Transaction from './transactions/EditDesc_Transaction'
 {/*import ItemsListHeaderComponent from './components/ItemsListHeaderComponent'
 import ItemsListComponent from './components/ItemsListComponent'
 import ListsComponent from './components/ListsComponent'
@@ -28,7 +29,7 @@ class App extends Component {
     // MAKE OUR TRANSACTION PROCESSING SYSTEM
     this.tps = new jsTPS();
 
-    localStorage.clear();
+    // localStorage.clear();
 
     // CHECK TO SEE IF THERE IS DATA IN LOCAL STORAGE FOR THIS APP
     let recentLists = localStorage.getItem("recentLists");
@@ -348,9 +349,33 @@ class App extends Component {
     });
   };
 
+
 // END OF MODAL WORK //
+
+handleNameUpdate = (name) => {
+  let toDoList = this.state.currentList;
+
+  toDoList.name = name;
+
+  const nextLists = this.state.toDoLists.filter(testList =>
+    testList.id !== toDoList.id
+  );
+  nextLists.unshift(toDoList);
+
+  this.setState({
+    currentList: toDoList,
+    toDoLists: nextLists
+  }, this.afterToDoListsChangeComplete)
+    
+}
+
 // LIST EDITING CALLBACK HANDLERS //
-  // DESCRIPTION DONE //
+  // DESCRIPTION START //
+  editDescTransaction = (id, desc, oldDescription) => {
+    let trans = new EditDesc_Transaction(this, id, desc, oldDescription);
+    this.tps.addTransaction(trans);
+  }
+
   handleDescUpdate = (id, desc) => {
     let toDoList = this.state.currentList;    // obtains the current list
     let indexOfItem = -1;
@@ -363,6 +388,7 @@ class App extends Component {
 
     let editedItem = toDoList.items[indexOfItem];
     editedItem.description = desc;
+    // console.log(editedItem);
 
     this.setState({
       currentList: this.state.currentList
@@ -412,10 +438,8 @@ class App extends Component {
 // UNDO / REDO WORK //
 
   undo = () => {
-    console.log("boop");
     if (this.tps.hasTransactionToUndo()) {
       this.tps.undoTransaction();
-      console.log("hi")
     }
   } 
 
@@ -431,6 +455,8 @@ class App extends Component {
 
 // END OF UNDO / REDO //
 
+
+
   // THIS IS A CALLBACK FUNCTION FOR AFTER AN EDIT TO A LIST
   afterToDoListsChangeComplete = () => {
     console.log("App updated currentToDoList: " + this.state.currentList);
@@ -438,18 +464,15 @@ class App extends Component {
     // WILL THIS WORK? @todo
     let toDoListsString = JSON.stringify(this.state.toDoLists);
     localStorage.setItem("recentLists", toDoListsString);
-
-    console.log(this.state.toDoLists)
   }
 
   render() {
-    console.log(this.state.toDoLists);
-    console.log(this.state.currentList);
     let items = this.state.currentList.items;
     return (
       <div id="root">
         <Navbar />
         <LeftSidebar 
+          nameUpdateCallback={this.handleNameUpdate}
           currentList={this.state.currentList}
           toDoLists={this.state.toDoLists}
           loadToDoListCallback={this.loadToDoList}
@@ -458,7 +481,7 @@ class App extends Component {
         <Workspace 
           undo={this.undo}
           redo={this.redo}
-          descUpdateCallback={this.handleDescUpdate}
+          descUpdateCallback={this.editDescTransaction}
           dateUpdateCallback={this.handleDateUpdate}
           statusUpdateCallback={this.handleStatusUpdate}
           currentList={this.state.currentList}

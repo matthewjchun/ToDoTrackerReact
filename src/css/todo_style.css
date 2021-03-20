@@ -95,6 +95,16 @@
     background-color: var(--swatch-contrast);
 }
 
+.todo-button-edit {
+    cursor:pointer;
+    background-color: var(--swatch-complement);
+    font-weight: bold;
+}
+
+.todo-button-edit:hover {
+    background-color: white;
+}
+
 #add-list-button {
     /* color: var(--swatch-accent); */
 }

@@ -28,6 +28,7 @@ class LeftSidebar extends Component {
                 {
                     this.props.toDoLists.map((toDoList) => (
                         <ListLink
+                            nameUpdateCallback={this.props.nameUpdateCallback}
                             activeList={this.props.currentList.id === toDoList.id}
                             key={toDoList.id}
                             toDoList={toDoList}                                // PASS THE LIST TO THE CHILDREN

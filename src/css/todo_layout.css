@@ -79,6 +79,10 @@
     white-space: nowrap;
 }
 
+.todo-button-edit {
+    white-space: nowrap;
+}
+
 #left-sidebar-controls {
     text-align: right;
 }
