@@ -13,6 +13,7 @@ class ToDoItem extends Component {
 
         this.state = {
             id: this.props.toDoListItem.id,
+            oldDesc: this.props.toDoListItem.description,
             desc: this.props.toDoListItem.description,
             date: this.props.toDoListItem.due_date,
             status: this.props.toDoListItem.status,
@@ -49,10 +50,13 @@ class ToDoItem extends Component {
         this.setState({
             desc: event.target.value
         });
+        // console.log(this.state.oldDesc);
+        // console.log(this.state.desc);
     }
 
     handleFinishDesc = () => {
-        this.props.descUpdateCallback(this.state.id, this.state.desc, );
+        // console.log(this.state.oldDesc);
+        this.props.descUpdateCallback(this.state.id, this.state.desc, this.state.oldDesc);
 
         this.setState({
             editDesc: false

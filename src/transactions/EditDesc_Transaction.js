@@ -25,7 +25,6 @@ export default class EditDesc_Transaction extends jsTPS_Transaction{
      * This method is called by jTPS when a transaction is executed.
      */
     doTransaction() {
-
         this.app.handleDescUpdate(this.id, this.desc);
     }
     
