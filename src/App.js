@@ -14,6 +14,8 @@ import DeleteItem_Transaction from './transactions/DeleteItem_Transaction';
 import MoveUp_Transaction from './transactions/MoveUp_Transaction'
 import MoveDown_Transaction from './transactions/MoveDown_Transaction'
 import EditDesc_Transaction from './transactions/EditDesc_Transaction'
+import EditDate_Transaction from './transactions/EditDate_Transaction'
+import EditStatus_Transaction from './transactions/EditStatus_Transaction'
 {/*import ItemsListHeaderComponent from './components/ItemsListHeaderComponent'
 import ItemsListComponent from './components/ItemsListComponent'
 import ListsComponent from './components/ListsComponent'
@@ -29,7 +31,7 @@ class App extends Component {
     // MAKE OUR TRANSACTION PROCESSING SYSTEM
     this.tps = new jsTPS();
 
-    // localStorage.clear();
+    localStorage.clear();
 
     // CHECK TO SEE IF THERE IS DATA IN LOCAL STORAGE FOR THIS APP
     let recentLists = localStorage.getItem("recentLists");
@@ -95,6 +97,12 @@ class App extends Component {
       closeList.classList.remove("disabled");
     }
 
+    this.tps.clearAllTransactions();
+    let undo = document.getElementById("undo-button");
+    undo.classList.add("disabled");
+    let redo = document.getElementById("redo-button");
+    redo.classList.add("disabled")
+
     console.log(toDoList);
 
     this.setState({
@@ -145,6 +153,11 @@ class App extends Component {
   addNewItemTransaction = () => {
     let trans = new AddNewItem_Transaction(this);
     this.tps.addTransaction(trans);
+
+    let undo = document.getElementById("undo-button");
+    undo.classList.remove("disabled");
+
+
   }
 
   addNewItem = () => {
@@ -183,6 +196,12 @@ class App extends Component {
   deleteItemTransaction = (id) => {
     let trans = new DeleteItem_Transaction(this, id);
     this.tps.addTransaction(trans);
+
+
+    let undo = document.getElementById("undo-button");
+    undo.classList.remove("disabled");
+
+
   }
 
 
@@ -220,6 +239,11 @@ class App extends Component {
   moveUpTransaction = (id) => {
     let trans = new MoveUp_Transaction(this, id);
     this.tps.addTransaction(trans);
+
+
+    let undo = document.getElementById("undo-button");
+    undo.classList.remove("disabled");
+
   }
 
   swapItemUp = (id) => {
@@ -257,6 +281,9 @@ class App extends Component {
   moveDownTransaction = (id) => {
     let trans = new MoveDown_Transaction(this, id);
     this.tps.addTransaction(trans);
+
+    let undo = document.getElementById("undo-button");
+    undo.classList.remove("disabled");
   }
 
   swapItemDown = (id) => {
@@ -374,6 +401,9 @@ handleNameUpdate = (name) => {
   editDescTransaction = (id, desc, oldDescription) => {
     let trans = new EditDesc_Transaction(this, id, desc, oldDescription);
     this.tps.addTransaction(trans);
+
+    let undo = document.getElementById("undo-button");
+    undo.classList.remove("disabled");
   }
 
   handleDescUpdate = (id, desc) => {
@@ -388,14 +418,24 @@ handleNameUpdate = (name) => {
 
     let editedItem = toDoList.items[indexOfItem];
     editedItem.description = desc;
-    // console.log(editedItem);
 
     this.setState({
-      currentList: this.state.currentList
+      currentList: toDoList
     }, this.afterToDoListsChangeComplete)
+
+    this.loadToDoList(this.state.currentList)
   }
   // DESCRIPTION DONE //
   // DATE START //
+
+  editDateTransaction = (id, date, oldDate) => {
+    let trans = new EditDate_Transaction(this, id, date, oldDate);
+    this.tps.addTransaction(trans);
+
+    let undo = document.getElementById("undo-button");
+    undo.classList.remove("disabled");
+  }
+
   handleDateUpdate = (id, date) => {
     let toDoList = this.state.currentList;    // obtains the current list
     let indexOfItem = -1;
@@ -415,6 +455,15 @@ handleNameUpdate = (name) => {
   }
   // DATE DONE //
   // STATUS START //
+
+  editStatusTransaction = (id, status, oldStat) => {
+    let trans = new EditStatus_Transaction(this, id, status, oldStat);
+    this.tps.addTransaction(trans);
+
+    let undo = document.getElementById("undo-button");
+    undo.classList.remove("disabled");
+  }
+
   handleStatusUpdate = (id, status) => {
     let toDoList = this.state.currentList;    // obtains the current list
     let indexOfItem = -1;
@@ -438,20 +487,35 @@ handleNameUpdate = (name) => {
 // UNDO / REDO WORK //
 
   undo = () => {
+    let redo = document.getElementById("redo-button");
+    let undo = document.getElementById("undo-button");
     if (this.tps.hasTransactionToUndo()) {
       this.tps.undoTransaction();
+      if (!this.tps.hasTransactionToUndo()) {
+          undo.classList.add("disabled");
+      }
+      redo.classList.remove("disabled");
     }
   } 
 
   redo = () => {
+    let redo = document.getElementById("redo-button");
+    let undo = document.getElementById("undo-button");
     if (this.tps.hasTransactionToRedo()) {
         this.tps.doTransaction();
-        // if (!this.tps.hasTransactionToRedo()) {
-        //     this.view.disableButton("redo-button");
-        // }
-        // this.view.enableButton("undo-button");
+        if (!this.tps.hasTransactionToRedo()) {
+            redo.classList.add("disabled");
+        }
+        undo.classList.remove("disabled");
     }
-}
+  }
+
+  keydownHandler = (e) => {
+    if(e.keyCode == 90 && e.ctrlKey && this.tps.hasTransactionToUndo)
+      this.undo();
+    if(e.keyCode == 89 && e.ctrlKey && this.tps.hasTransactionToRedo)
+      this.redo();
+  }
 
 // END OF UNDO / REDO //
 
@@ -468,6 +532,7 @@ handleNameUpdate = (name) => {
 
   render() {
     let items = this.state.currentList.items;
+    console.log(this.state.toDoLists)
     return (
       <div id="root">
         <Navbar />
@@ -482,8 +547,8 @@ handleNameUpdate = (name) => {
           undo={this.undo}
           redo={this.redo}
           descUpdateCallback={this.editDescTransaction}
-          dateUpdateCallback={this.handleDateUpdate}
-          statusUpdateCallback={this.handleStatusUpdate}
+          dateUpdateCallback={this.editDateTransaction}
+          statusUpdateCallback={this.editStatusTransaction}
           currentList={this.state.currentList}
           toDoLists={this.state.toDoLists}
           toDoListItems={items} 

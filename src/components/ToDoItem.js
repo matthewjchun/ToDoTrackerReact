@@ -15,7 +15,9 @@ class ToDoItem extends Component {
             id: this.props.toDoListItem.id,
             oldDesc: this.props.toDoListItem.description,
             desc: this.props.toDoListItem.description,
+            oldDate: this.props.toDoListItem.due_date,
             date: this.props.toDoListItem.due_date,
+            oldStatus: this.props.toDoListItem.status,
             status: this.props.toDoListItem.status,
             editDesc: false,
             editDate: false,
@@ -50,12 +52,9 @@ class ToDoItem extends Component {
         this.setState({
             desc: event.target.value
         });
-        // console.log(this.state.oldDesc);
-        // console.log(this.state.desc);
     }
 
     handleFinishDesc = () => {
-        // console.log(this.state.oldDesc);
         this.props.descUpdateCallback(this.state.id, this.state.desc, this.state.oldDesc);
 
         this.setState({
@@ -78,8 +77,7 @@ class ToDoItem extends Component {
     }
 
     handleFinishDate = () => {
-
-        this.props.dateUpdateCallback(this.state.id, this.state.date);
+        this.props.dateUpdateCallback(this.state.id, this.state.date, this.state.oldDate);
 
         this.setState({
             editDate: false
@@ -101,8 +99,7 @@ class ToDoItem extends Component {
     }
 
     handleFinishStatus = () => {
-
-        this.props.statusUpdateCallback(this.state.id, this.state.status);
+        this.props.statusUpdateCallback(this.state.id, this.state.status, this.state.oldStatus);
 
         this.setState({
             editStatus: false
@@ -207,9 +204,9 @@ class ToDoItem extends Component {
             else{
                 return (
                     <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
-                        <div className='item-col task-col' onClick={this.handleEditDesc}>{this.state.desc}</div>
-                        <div className='item-col due-date-col' onClick={this.handleEditDate}>{this.state.date}</div>
-                        <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{this.state.status}</div>
+                        <div className='item-col task-col' onClick={this.handleEditDesc}>{listItem.description}</div>
+                        <div className='item-col due-date-col' onClick={this.handleEditDate}>{listItem.due_date}</div>
+                        <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{listItem.status}</div>
                         <div className='item-col test-4-col'></div>
                         <div className='item-col list-controls-col'>
                             <KeyboardArrowUp 
@@ -317,9 +314,9 @@ class ToDoItem extends Component {
             else{
                 return (
                     <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
-                        <div className='item-col task-col' onClick={this.handleEditDesc}>{this.state.desc}</div>
-                        <div className='item-col due-date-col' onClick={this.handleEditDate}>{this.state.date}</div>
-                        <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{this.state.status}</div>
+                        <div className='item-col task-col' onClick={this.handleEditDesc}>{listItem.description}</div>
+                        <div className='item-col due-date-col' onClick={this.handleEditDate}>{listItem.due_date}</div>
+                        <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{listItem.status}</div>
                         <div className='item-col test-4-col'></div>
                         <div className='item-col list-controls-col'>
                             <KeyboardArrowUp 
@@ -427,9 +424,9 @@ class ToDoItem extends Component {
             else{
                 return (
                     <div id={'todo-list-item-' + this.state.id} className='list-item-card'>
-                        <div className='item-col task-col' onClick={this.handleEditDesc}>{this.state.desc}</div>
-                        <div className='item-col due-date-col' onClick={this.handleEditDate}>{this.state.date}</div>
-                        <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{this.state.status}</div>
+                        <div className='item-col task-col' onClick={this.handleEditDesc}>{listItem.description}</div>
+                        <div className='item-col due-date-col' onClick={this.handleEditDate}>{listItem.due_date}</div>
+                        <div className='item-col status-col' className={statusType} onClick={this.handleEditStatus}>{listItem.status}</div>
                         <div className='item-col test-4-col'></div>
                         <div className='item-col list-controls-col'>
                             <KeyboardArrowUp 

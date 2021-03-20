@@ -12,29 +12,27 @@ import { jsTPS_Transaction } from "../common/jsTPS.js"
  * @author THE McKilla Gorilla (accept no imposters)
  * @version 1.0
  */
-export default class EditDesc_Transaction extends jsTPS_Transaction{
-    constructor(app, id, desc, oldDesc){
+export default class EditDate_Transaction extends jsTPS_Transaction{
+    constructor(app, id, date, oldDate){
         super();
         this.app = app;
         this.id = id;
-        this.desc = desc;
-        this.oldDesc = oldDesc;
+        this.date = date;
+        this.oldDate = oldDate;
     }
     
     /**
      * This method is called by jTPS when a transaction is executed.
      */
     doTransaction() {
-        this.app.handleDescUpdate(this.id, this.desc);
+        this.app.handleDateUpdate(this.id, this.date);
     }
     
     /**
      * This method is called by jTPS when a transaction is undone.
      */
     undoTransaction() {
-        console.log("am i even called");
-        console.log(this.oldDesc);
-        this.app.handleDescUpdate(this.id, this.oldDesc);
+        this.app.handleDateUpdate(this.id, this.oldDate);
     }
 }
 

@@ -12,29 +12,27 @@ import { jsTPS_Transaction } from "../common/jsTPS.js"
  * @author THE McKilla Gorilla (accept no imposters)
  * @version 1.0
  */
-export default class EditDesc_Transaction extends jsTPS_Transaction{
-    constructor(app, id, desc, oldDesc){
+export default class EditStatus_Transaction extends jsTPS_Transaction{
+    constructor(app, id, status, oldStat){
         super();
         this.app = app;
         this.id = id;
-        this.desc = desc;
-        this.oldDesc = oldDesc;
+        this.status = status;
+        this.oldStat = oldStat;
     }
     
     /**
      * This method is called by jTPS when a transaction is executed.
      */
     doTransaction() {
-        this.app.handleDescUpdate(this.id, this.desc);
+        this.app.handleStatusUpdate(this.id, this.status);
     }
     
     /**
      * This method is called by jTPS when a transaction is undone.
      */
     undoTransaction() {
-        console.log("am i even called");
-        console.log(this.oldDesc);
-        this.app.handleDescUpdate(this.id, this.oldDesc);
+        this.app.handleStatusUpdate(this.id, this.oldStat);
     }
 }
 
